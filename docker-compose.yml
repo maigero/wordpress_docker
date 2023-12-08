@@ -1,10 +1,51 @@
 version: "3"
 
 services:
-  wp:
-    image: wordpress:latest # https://hub.docker.com/_/wordpress/
+  web:
+    image: nginx
+    depends_on:
+      - wp
+    restart: always
+    volumes:
+      #
+      # Import our Nginx configuration for FPM.
+      #
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      #
+      # The webserver will also need to see our Wordpress install.
+      #
+      - ./wp-app:/var/www/html
+      #
+      # Write logs here.  Note that they will need to be
+      # rotated on the parent system.
+      #
+      - ./logs:/var/log/nginx
+  https-portal:
+    image: steveltn/https-portal:1
+    depends_on:
+      - web
     ports:
-      - ${PORT}:80 # change ip if required
+      - 80:80
+      - 443:443
+    restart: always
+    #
+    # Save our SSL certs between runs so they aren't regenerated on every single run.
+    #
+    volumes:
+      - ./ssl_certs:/var/lib/https-portal
+    environment:
+      DOMAINS: "abc.com -> http://web:80 #production"
+      #DOMAINS: 'YOUR_FQDN -> http://web:80 #staging' # Uncomment when you want to test a staging cert.
+      #DOMAINS: 'YOUR_FQDN -> http://web:80 #production' # Uncomment when you are ready for production.
+      #
+      # Allow larger files to be uploaded
+      #
+      CLIENT_MAX_BODY_SIZE: 64M
+  wp:
+    image: wordpress:php8.2-fpm # https://hub.docker.com/_/wordpress/
+    restart: always
+    # ports:
+    #   - ${PORT}:80 # change ip if required
     volumes:
       - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./wp-app:/var/www/html # Full wordpress project
