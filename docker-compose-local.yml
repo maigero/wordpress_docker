@@ -1,51 +1,12 @@
 version: "3"
 
 services:
-  web:
-    image: nginx
-    depends_on:
-      - wp
-    restart: always
-    volumes:
-      #
-      # Import our Nginx configuration for FPM.
-      #
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      #
-      # The webserver will also need to see our Wordpress install.
-      #
-      - ./wp-app:/var/www/html
-      #
-      # Write logs here.  Note that they will need to be
-      # rotated on the parent system.
-      #
-      - ./logs:/var/log/nginx
-  https-portal:
-    image: steveltn/https-portal:1
-    depends_on:
-      - web
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    #
-    # Save our SSL certs between runs so they aren't regenerated on every single run.
-    #
-    volumes:
-      - ./ssl_certs:/var/lib/https-portal
-    environment:
-      DOMAINS: "abc.com -> http://web:80 #production"
-      #DOMAINS: 'YOUR_FQDN -> http://web:80 #staging' # Uncomment when you want to test a staging cert.
-      #DOMAINS: 'YOUR_FQDN -> http://web:80 #production' # Uncomment when you are ready for production.
-      #
-      # Allow larger files to be uploaded
-      #
-      CLIENT_MAX_BODY_SIZE: 64M
   wp:
-    image: wordpress:php8.2-fpm # https://hub.docker.com/_/wordpress/
+    image: wordpress:latest # https://hub.docker.com/_/wordpress/
+    platform: linux/x86_64  # Uncomment if your machine is running on arm (ex: Apple Silicon processor)
     restart: always
-    # ports:
-    #   - ${PORT}:80 # change ip if required
+    ports:
+      - ${PORT}:80 # change ip if required
     volumes:
       - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./wp-app:/var/www/html # Full wordpress project
@@ -63,6 +24,7 @@ services:
 
   wpcli:
     image: wordpress:cli
+    platform: linux/x86_64  # Uncomment if your machine is running on arm (ex: Apple Silicon processor)
     volumes:
       - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./wp-app:/var/www/html
@@ -77,6 +39,7 @@ services:
 
   pma:
     image: phpmyadmin:latest # https://hub.docker.com/_/phpmyadmin
+    platform: linux/x86_64  # Uncomment if your machine is running on arm (ex: Apple Silicon processor)
     environment:
       # https://docs.phpmyadmin.net/en/latest/setup.html#docker-environment-variables
       PMA_HOST: db
@@ -90,7 +53,7 @@ services:
 
   db:
     image: mysql:latest # https://hub.docker.com/_/mysql/ - or mariadb https://hub.docker.com/_/mariadb
-    # platform: linux/x86_64  # Uncomment if your machine is running on arm (ex: Apple Silicon processor)
+    platform: linux/x86_64  # Uncomment if your machine is running on arm (ex: Apple Silicon processor)
     ports:
       - 3306:3306 # change ip if required
     command:

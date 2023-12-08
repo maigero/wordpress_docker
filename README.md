@@ -1,5 +1,15 @@
 # WPDC - WordPress Docker Compose
 
+# local
+```sh
+docker compose -f docker-compose-local.yml up --build -d 
+```
+
+# production
+```sh
+docker compose -f docker-compose-production.yml up --build -d 
+```
+
 Easy WordPress development with Docker and Docker Compose.
 
 With this project you can quickly run the following:
