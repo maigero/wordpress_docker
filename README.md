@@ -1,11 +1,19 @@
 # WPDC - WordPress Docker Compose
 
-# local
+## 1. set env
+
+```sh
+cp env.example .env
+```
+
+## 2. run locally
+
 ```sh
 docker compose -f docker-compose-local.yml up --build -d 
 ```
 
-# production
+## 3. run in production
+
 ```sh
 docker compose -f docker-compose-production.yml up --build -d 
 ```
@@ -29,9 +37,12 @@ Contents:
 
 Make sure you have the latest versions of **Docker** and **Docker Compose** installed on your machine.
 
-Clone this repository or copy the files from this repository into a new folder. In the **docker-compose.yml** file you may change the IP address (in case you run multiple containers) or the database from MySQL to MariaDB.
+Clone this repository or copy the files from this repository into a new folder. In the **docker-compose.yml** file you
+may change the IP address (in case you run multiple containers) or the database from MySQL to MariaDB.
 
-Make sure to [add your user to the `docker` group](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) when using Linux.
+Make sure
+to [add your user to the `docker` group](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user)
+when using Linux.
 
 ## Configuration
 
@@ -56,7 +67,8 @@ This creates two new folders next to your `docker-compose.yml` file.
 * `wp-data` – used to store and restore database dumps
 * `wp-app` – the location of your WordPress application
 
-The containers are now built and running. You should be able to access the WordPress installation with the configured IP in the browser address. By default it is `http://127.0.0.1`.
+The containers are now built and running. You should be able to access the WordPress installation with the configured IP
+in the browser address. By default it is `http://127.0.0.1`.
 
 For convenience you may add a new entry into your hosts file.
 
@@ -64,7 +76,8 @@ For convenience you may add a new entry into your hosts file.
 
 ### Starting containers
 
-You can start the containers with the `up` command in daemon mode (by adding `-d` as an argument) or by using the `start` command:
+You can start the containers with the `up` command in daemon mode (by adding `-d` as an argument) or by using
+the `start` command:
 
 ```
 docker-compose start
@@ -103,7 +116,8 @@ You can now use the `up` command:
 docker-compose up
 ```
 
-This will create the containers and populate the database with the given dump. You may set your host entry and change it in the database, or you simply overwrite it in `wp-config.php` by adding:
+This will create the containers and populate the database with the given dump. You may set your host entry and change it
+in the database, or you simply overwrite it in `wp-config.php` by adding:
 
 ```
 define('WP_HOME','http://wp-app.local');
@@ -136,7 +150,8 @@ volumes:
 
 ### WP CLI
 
-The docker compose configuration also provides a service for using the [WordPress CLI](https://developer.wordpress.org/cli/commands/).
+The docker compose configuration also provides a service for using
+the [WordPress CLI](https://developer.wordpress.org/cli/commands/).
 
 Sample command to install WordPress:
 
